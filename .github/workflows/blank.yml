@@ -24,15 +24,13 @@ jobs:
         name: Check latest release
         run: |
           find
-          test -a debian_repo/current_version.txt && {
-            CURRENT=$(cat debian_repo/current_version.txt)
+          test -a nchat_build_version.txt && {
+            CURRENT=$(cat nchat_build_version.txt)
           } || {
             CURRENT=$(curl -s \
             https://api.github.com/repos/d99kris/nchat/releases/latest \
             | jq -r .tag_name)
-            echo $CURRENT > debian_repo/current_version.txt
-
-            cd debian_repo
+            echo $CURRENT > nchat_build_version.txt
           
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -52,6 +50,7 @@ jobs:
             echo "build=false" >> $GITHUB_OUTPUT
           } || {
             echo "build=true" >> $GITHUB_OUTPUT
+            echo "$LATEST" > nchat_build_version.txt
           }
 
   build:
