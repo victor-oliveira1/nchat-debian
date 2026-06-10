@@ -66,3 +66,8 @@ jobs:
           repository: victor-oliveira1/debian_repo
           token: ${{ secrets.DEBIAN_REPO_TOKEN }}
           path: debian_repo
+
+      - name: Updating repo
+        run: |
+          ls -lsa
+          find
