@@ -60,8 +60,9 @@ jobs:
           
           DEB_BUILD_OPTIONS="nostrip nodwz" equivs-build nchat.control
       
-      - name: Update package
-        run: |
-          git clone \
-          https://x-access-token:${{ secrets.DEBIAN_REPO_TOKEN }}@github.com/victoroliveira/debian-repository.git
-          
+      - name: Checkout Debian repository
+        uses: actions/checkout@v4
+        with:
+          repository: victor-oliveira1/debian_repo
+          token: ${{ secrets.DEBIAN_REPO_TOKEN }}
+          path: debian_repo
