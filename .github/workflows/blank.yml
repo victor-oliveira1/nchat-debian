@@ -67,6 +67,11 @@ jobs:
           token: ${{ secrets.DEBIAN_REPO_TOKEN }}
           path: debian_repo
 
+      - name: Find deb files
+        run: |
+          pwd
+          find . -name "*.deb" -type f
+
       - name: Updating repo
         run: |
           cp nchat/nchat*.deb debian_repo/deb/
