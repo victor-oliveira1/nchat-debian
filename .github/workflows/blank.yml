@@ -31,7 +31,7 @@ jobs:
       - name: Run a multi-line script
         run: |
           apt update
-          apt install -y git sudo
+          apt install -y git sudo lsb-release
           git clone https://github.com/d99kris/nchat
           cd nchat
           VERSION=$(git tag --sort=-creatordate | head -n 1)
