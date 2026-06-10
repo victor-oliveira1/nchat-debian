@@ -23,9 +23,6 @@ jobs:
       - id: check
         name: Check latest release
         run: |
-          apt update
-          apt install -y curl jq
-
           test -a debian_repo/current_version.txt && {
             CURRENT=$(cat debian_repo/current_version.txt)
           } || {
