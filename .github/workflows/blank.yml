@@ -1,0 +1,60 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    container:
+      image: debian:stable
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          apt install -y git
+          git clone https://github.com/d99kris/nchat
+          cd nchat
+          VERSION=$(git tag --sort=-creatordate | head -n 1)
+          git checkout ${VERSION}
+          apt install golang libpng-dev libx11-dev libxcb1-dev -y
+          ./make.sh deps -y
+          NCHAT_CMAKEARGS="-DCMAKE_INSTALL_PREFIX=/usr" ./make.sh build --no-telegram
+          cd build
+          make install DESTDIR=./prefix
+          
+          cat <<EOF1 > nchat.control
+          Section: net
+          Priority: optional
+          Standards-Version: 3.9.2
+          
+          Package: nchat
+          Version: ${VERSION#v}
+          Maintainer: Victor Oliveira <victor.oliveira@gmx.com>
+          Architecture: amd64
+          Depends: libreadline8, libssl3, libncursesw6, libsqlite3-0, libmagic1, libxcb1
+          Files:$(while read L; do D=${L%/*}; echo " ./prefix$L $D/"; done < install_manifest.txt)
+          Description: Terminal-based Telegram / WhatsApp client
+           nchat is a terminal-based chat client with support for 
+           Telegram and WhatsApp. It features a modern ncurses UI.
+          EOF1
+          
+          DEB_BUILD_OPTIONS="nostrip nodwz" equivs-build nchat.control
