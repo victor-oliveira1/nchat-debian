@@ -74,7 +74,7 @@ jobs:
 
       - name: Updating repo
         run: |
-          cp nchat/nchat*.deb debian_repo/deb/
+          cp nchat/build/nchat*.deb debian_repo/deb/
           apt install -y apt-utils dpkg-dev
           cd debian_repo
           dpkg-scanpackages . /dev/null > Packages
