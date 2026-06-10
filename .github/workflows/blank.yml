@@ -26,7 +26,6 @@ jobs:
       - id: check
         name: Check latest release
         run: |
-          find
           test -a nchat_build_version.txt && {
             CURRENT=$(cat nchat_build_version.txt)
           } || {
